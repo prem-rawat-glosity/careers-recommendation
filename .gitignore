@@ -1,0 +1,7 @@
+data.xlsx
+.env
+.flaskenv
+web_application.py
+rough.py
+**/__pycache__/
+/.idea
