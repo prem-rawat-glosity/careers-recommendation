@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, jsonify
 from modelling.training import build_model
+from careers_embedding import updateCareerEmbedding
 import requests
 from utils import read_configs, get_service_api
 from config import settings
@@ -7,13 +8,12 @@ from joblib import dump
 
 app = Flask(__name__)
 
-
 SERVICE_API = f"{settings.api_base_url}/api/{settings.api_version}/{settings.service_type}"
 
 
-@app.route("/d2v/train/", methods=['GET'])
+@app.route("/careers/d2v/train/", methods=['GET'])
 def generate_d2v_model():
-    configs = read_configs(file="../config.yml")
+    configs = read_configs(file="./config.yml")
     # service_api = get_service_api(configs)
     model, params, matrices = build_model(service_api=SERVICE_API,
                                           configs=configs,
@@ -41,12 +41,12 @@ def generate_d2v_model():
         return None
 
 
-@app.route("/tfidf/train/", methods=['GET'])
+@app.route("/careers/tfidf/train/", methods=['GET'])
 def generate_tfidf_model():
-    configs = read_configs(file="../config.yml")
+    configs = read_configs(file="./config.yml")
     # service_api = get_service_api(configs)
     model, params = build_model(service_api=SERVICE_API,
-                                configs=configs,)
+                                configs=configs, )
 
     dump(model, filename="tfidf", compress=0)
 
@@ -69,6 +69,15 @@ def generate_tfidf_model():
         return None
 
 
+@app.route("/careers/update_embeddings", methods=['GET'])
+def update_career_embedding():
+    configs = read_configs(file="./config.yml")
+    # service_api = get_service_api(configs)
+    updateCareerEmbedding(service_api=SERVICE_API,
+                          configs=configs)
+    return jsonify({"message": "Successfully Update All Career Embeddings"})
+
+
 @app.route("/")
 def welcome():
     message = """
@@ -81,4 +90,4 @@ def welcome():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

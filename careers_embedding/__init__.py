@@ -1,0 +1,1 @@
+from careers_embedding.career_embed import updateCareerEmbedding

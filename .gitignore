@@ -5,3 +5,4 @@ web_application.py
 rough.py
 **/__pycache__/
 /.idea
+/models
