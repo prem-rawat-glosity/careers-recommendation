@@ -3,7 +3,10 @@ import pandas as pd
 
 
 def unique_fields(careers_info: list[dict]):
-    return set(key for keys in careers_info for key in keys)
+    if isinstance(careers_info, list):
+        return set(key for keys in careers_info for key in keys)
+    else:
+        raise Exception("Input Argument 'career_info' should be List Type.")
 
 
 def load_careers(service_api: str, configs: dict):

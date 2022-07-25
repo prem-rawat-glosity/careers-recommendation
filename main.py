@@ -1,5 +1,5 @@
 from modelling.training import build_model
-from utils import read_configs, get_service_api
+from etl.utils import read_configs
 from joblib import dump
 from config import settings
 

@@ -1,6 +1,5 @@
 import os
 import yaml
-import pprint
 
 
 def read_configs(file) -> dict:
@@ -23,3 +22,7 @@ def get_service_api(configs: dict):
     if "SERVICE_TYPE" in configs.keys():
         api += "/" + configs["SERVICE_TYPE"]
     return api
+
+
+def print_time_taken(start, end, api_name):
+    print("Time taken by {}: {}".format(api_name, end-start))
