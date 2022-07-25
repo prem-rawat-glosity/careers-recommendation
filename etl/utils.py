@@ -1,8 +1,11 @@
+import os
 import yaml
+import pprint
 
 
 def read_configs(file) -> dict:
-    with open(file, "r") as stream:
+    filename = os.path.join(os.getcwd(), file)
+    with open(filename, "r") as stream:
         configs = yaml.safe_load(stream)
         return configs
 
