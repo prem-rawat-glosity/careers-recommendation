@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from gensim.utils import simple_preprocess
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
@@ -12,24 +13,27 @@ class Doc2VecModel(BaseEstimator, TransformerMixin):
         self.epochs = epochs
         self.model = Doc2Vec(vector_size=self.size, window=self.window,
                              dm=self.dm, epochs=self.epochs, **args)
-        self.tagged_documents = list()
+        self.tagged_documents = None
+        self.incrementer = -1  # for indexing each document
 
-    def tag_examples(self, raw_documents):
-        self.tagged_documents.clear()
-        for index, tokens in raw_documents.iteritems():
-            self.tagged_documents.append(TaggedDocument(words=tokens,
-                                                        tags=[index]))
+    def tag_example(self, raw_document):
+        self.incrementer += 1
+        return TaggedDocument(words=raw_document, tags=[self.incrementer])
 
     def fit(self, raw_documents):
-        processed_documents = raw_documents.apply(simple_preprocess,)
+        processed_documents = raw_documents.apply(simple_preprocess, )
+
         # Generate Tagged Examples
-        self.tag_examples(processed_documents)
+        self.tagged_documents = processed_documents.apply(self.tag_example, )
 
         # Build vocabulary
-        self.model.build_vocab(self.tagged_documents)
+        self.model.build_vocab(corpus_iterable=self.tagged_documents)
+
+        if len(self.model.wv.key_to_index) == 0:
+            raise Exception("Either number of min_count is very less or no sample is present is input data.")
 
         # Train model
-        self.model.train(self.tagged_documents,
+        self.model.train(corpus_iterable=self.tagged_documents,
                          total_examples=self.model.corpus_count,
                          epochs=self.model.epochs)
 
@@ -44,7 +48,7 @@ class Doc2VecModel(BaseEstimator, TransformerMixin):
             rank = [docid for docid, sim in sims].index(tagged_document.tags[0])
             ranks.append(rank)
         counter_0 = ranks.count(0)
-        return counter_0/len(self.tagged_documents)
+        return counter_0 / self.tagged_documents.shape[0]
 
 
 def build_d2v(training_data: pd.Series, configs: dict):
@@ -54,23 +58,25 @@ def build_d2v(training_data: pd.Series, configs: dict):
     accuracy_score = d2v.score()
     return d2v, params, accuracy_score
 
-"""
 
-param_grid = {'window': [5],
-              'dm': [1],
-              'size': [50, 100, 200],
-              'epochs': [100, 200, 500]
-              }
+confi = {'D2V': {'PARAMS': {'alpha': 0.025, 'dbow_words': 1, 'dm': 1, 'epochs': 100,
+                            'min_alpha': 0.001, 'min_count': 1,
+                            'vector_size': 5, 'window': 1
+                            }
+                 }
+         }
 
-# pipe_log = Pipeline([('doc2vec', Doc2VecModel())])
-d2v_model = Doc2VecModel(size=100, dm=1, window=5, epochs=100,
-                         shrink_windows=True, alpha=0.025, min_alpha=0.001,
-                         dbow_words=1)
+train_series = pd.Series(["graphic designer adobe illustrator adobe photoshop adobe",
+                          "big data concepts logical thinking",
+                          "analyst microsoft excel tableau",
+                          "machine learning deep learning data science",
+                          "react js javascript swift android developer"
+                          ],
+                         name='features'
+                         )
 
-dataset = pd.read_excel("data.xlsx")
-data = feature_engineer(dataset, cols=CAREER_COLUMNS)
-training_data = generate_training_data(data)
-print(training_data)
-d2v_model.fit(training_data)
-print(d2v_model.score())
-"""
+model, par, score = build_d2v(training_data=train_series, configs=confi)
+
+print(type(model))
+print(par)
+print(score)
