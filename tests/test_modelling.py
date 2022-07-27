@@ -5,7 +5,7 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from modelling.d2v_model import Doc2VecModel, build_d2v
 import pytest
 
-TOL = 0.05
+TOL = 0.1
 
 
 class TestDoc2VecModel:
@@ -74,6 +74,11 @@ class TestDoc2VecModel:
         vector2 = np.reshape(vector2, newshape=(1, vector2.shape[0]))
         sim_value = d2v.model.dv.cosine_similarities(vector1, vector2)
         assert sim_value[0][0] == pytest.approx(0.96, TOL)
+
+    def test_score(self, d2v):
+        result = d2v.score()
+        assert isinstance(result, float)
+        assert result == pytest.approx(0.5, 1.0)
 
     def test_build_d2v(self, training_data, d2v_params):
         model, params, score = build_d2v(training_data=training_data,
