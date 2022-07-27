@@ -43,7 +43,7 @@ class TestProcessing:
     @pytest.fixture(scope="class")
     def preprocessed_text(self):
         features = ["graphic designer adobe illustrator adobe photoshop adobe creative suite "
-                    "typography logo creation choosing fonts color theory modifying design",
+                    "typography logo creation choose fonts color theory modifying design",
                     "big data engineer apache storm amazon web services aws openshift "
                     "cassandra big data concepts logical thinking fundamental algorithms",
                     "marketing analyst microsoft excel tableau data studio spss statistics "

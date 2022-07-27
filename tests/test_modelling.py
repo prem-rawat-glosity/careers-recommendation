@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
-import pytest
-from scipy.linalg import triu
 from gensim.utils import simple_preprocess
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from modelling.d2v_model import Doc2VecModel, build_d2v
+import pytest
 
 TOL = 0.05
 
