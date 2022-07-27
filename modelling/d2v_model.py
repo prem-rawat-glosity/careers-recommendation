@@ -59,7 +59,7 @@ def build_d2v(training_data: pd.Series, configs: dict):
     return d2v, params, accuracy_score
 
 
-confi = {'D2V': {'PARAMS': {'alpha': 0.025, 'dbow_words': 1, 'dm': 1, 'epochs': 100,
+"""confi = {'D2V': {'PARAMS': {'alpha': 0.025, 'dbow_words': 1, 'dm': 1, 'epochs': 100,
                             'min_alpha': 0.001, 'min_count': 1,
                             'vector_size': 5, 'window': 1
                             }
@@ -80,3 +80,4 @@ model, par, score = build_d2v(training_data=train_series, configs=confi)
 print(type(model))
 print(par)
 print(score)
+"""

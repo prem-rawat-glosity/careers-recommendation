@@ -6,3 +6,4 @@ rough.py
 **/__pycache__/
 /.idea
 /models
+/.pytest_cache
