@@ -2,15 +2,15 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    FLASK_APP: str = "flask_api"
-    FLASK_ENV: str = "development"
-    FLASK_RUN_HOST: str = "127.0.0.1"
-    FLASK_RUN_PORT: str = "8000"
-    FLASK_RUN_EXTRA_FILES: str = "config.yml"
-    api_base_url: str = "https://qaapi.glosity.club/api"
-    api_version: str = "v1"
-    service_type: str = "mobile"
-    models_base_url: str = "https://glosity.s3.ap-south-1.amazonaws.com/AI/careers"
+    FLASK_APP: str = 'FLASK_APP'
+    FLASK_ENV: str = 'FLASK_ENV'
+    FLASK_RUN_HOST: str = 'FLASK_RUN_HOST'
+    FLASK_RUN_PORT: str = 'FLASK_RUN_PORT'
+    FLASK_RUN_EXTRA_FILES: str = 'FLASK_RUN_EXTRA_FILES'
+    api_base_url: str = 'API_BASE_URL'
+    api_version: str = 'API_VERSION'
+    service_type: str = 'SERVICE_TYPE'
+    models_base_url: str = 'CAREERS_MODEL_BASE_URL'
 
     class Config:
         env_file = ".env"
