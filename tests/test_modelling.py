@@ -1,15 +1,21 @@
+import pytest
+import os
 import numpy as np
 import pandas as pd
 from gensim.utils import simple_preprocess
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from sklearn.feature_extraction.text import TfidfVectorizer
+from config import settings
+from etl.utils import read_configs
 from modelling.d2v_model import Doc2VecModel, build_d2v
-import pytest
+from modelling.tfidf_model import build_tfidf
+from modelling.training import build_model
 
 TOL = 0.1
 
 
 class TestDoc2VecModel:
-    @pytest.fixture(scope="module")
+    @pytest.fixture(scope="class")
     def d2v_params(self):
         return {'D2V': {'PARAMS': {'alpha': 0.025, 'dbow_words': 1, 'dm': 1, 'epochs': 5,
                                    'min_alpha': 0.001, 'shrink_windows': True, 'min_count': 1,
@@ -88,3 +94,56 @@ class TestDoc2VecModel:
         assert model.incrementer == 4
         assert params == d2v_params['D2V']['PARAMS']
         assert isinstance(score, float)
+
+
+class TestTFIDFModel:
+    @pytest.fixture(scope="class")
+    def tfidf_params(self):
+        return {'TFIDF': {'PARAMS': {'encoding': 'utf-8', 'lowercase': True,
+                                     'ngram_range': [1, 1], 'stop_words': 'english'
+                                     }
+                          }
+                }
+
+    @pytest.fixture(scope="class")
+    def training_data(self):
+        data = pd.Series(["graphic designer adobe illustrator adobe photoshop adobe",
+                          "big data concepts logical thinking",
+                          "analyst microsoft excel tableau",
+                          "machine learning deep learning data science",
+                          "react js javascript swift android developer"
+                          ]
+                         )
+        return data
+
+    def test_build_tfidf(self, tfidf_params, training_data):
+        model, params = build_tfidf(training_data=training_data,
+                                    configs=tfidf_params)
+        assert isinstance(model, TfidfVectorizer)
+        assert isinstance(params, dict)
+        assert isinstance(params['TFIDF'], dict)
+        assert isinstance(params['TFIDF']['PARAMS'], dict)
+        assert isinstance(params['TFIDF']['VOCAB_SIZE'], int)
+        assert params['TFIDF']['PARAMS']['ngram_range'] == [1, 1]
+        assert params['TFIDF']['PARAMS']['encoding'] == 'utf-8'
+        assert params['TFIDF']['PARAMS']['stop_words'] == 'english'
+        assert params['TFIDF']['VOCAB_SIZE'] == 24
+
+
+class TestTrainingModel:
+    @pytest.fixture(scope="class")
+    def get_service_api(self):
+        return f"{settings.api_base_url}/api/{settings.api_version}/{settings.service_type}"
+
+    @pytest.fixture(scope="class")
+    def get_config(self):
+        return read_configs(file=os.path.join(os.getcwd(), "config.yml"))
+
+    @pytest.mark.parametrize("is_d2v, output_len, exp_model", [(True, 3, Doc2VecModel),
+                                                               (False, 2, TfidfVectorizer)]
+                             )
+    def test_build_model(self, is_d2v, output_len, exp_model, get_service_api, get_config):
+        outcome = build_model(service_api=get_service_api, configs=get_config, d2v=is_d2v)
+        assert len(outcome) == output_len
+        assert isinstance(outcome[0], exp_model)
+        assert isinstance(outcome[1], dict)

@@ -31,6 +31,6 @@ class TestETLModule:
     def test_load_careers(self):
         data, columns = load_careers(
             service_api=f"{settings.api_base_url}/api/{settings.api_version}/{settings.service_type}",
-            configs=read_configs(os.path.join(os.getcwd(), "tests/test_config.yml")))
+            configs=read_configs(os.path.join(os.getcwd(), "config.yml")))
         assert type(data) == pd.DataFrame
         assert set(data.columns).issubset(set(columns))

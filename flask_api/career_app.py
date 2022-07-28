@@ -18,7 +18,7 @@ SERVICE_API = f"{settings.api_base_url}/api/{settings.api_version}/{settings.ser
 @app.route("/ai/careers/d2v/train/", methods=['GET'])
 def generate_d2v_model():
     start = time.time()
-    configs = read_configs(file="./test_config.yml")
+    configs = read_configs(file="./config.yml")
     # service_api = get_service_api(configs)
     model, params, matrices = build_model(service_api=SERVICE_API,
                                           configs=configs,
@@ -51,7 +51,7 @@ def generate_d2v_model():
 @app.route("/ai/careers/tfidf/train/", methods=['GET'])
 def generate_tfidf_model():
     start = time.time()
-    configs = read_configs(file="./test_config.yml")
+    configs = read_configs(file="./config.yml")
     # service_api = get_service_api(configs)
     model, params = build_model(service_api=SERVICE_API,
                                 configs=configs, )
