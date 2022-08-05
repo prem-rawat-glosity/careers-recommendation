@@ -44,8 +44,8 @@ def updateUserEmbedding(cid, service_api, configs):
         user_embedding_saving_api = "{}/updateCandidateEmbeddings".format(service_api)
 
         payload = json.dumps({"candidate_id": str(cid),
-                              "tfidf_embedding": [],  # list(map(lambda p: float(p), tfidf_vectors.loc[0])),
-                              "d2v_embedding": [],  # list(map(lambda p: float(p), d2v_vectors.loc[0]))
+                              "tfidf_embedding": list(map(lambda p: float(p), tfidf_vectors.loc[0])),
+                              "d2v_embedding": list(map(lambda p: float(p), d2v_vectors.loc[0]))
                               })
 
         headers = {
