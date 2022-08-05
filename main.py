@@ -4,7 +4,7 @@ from joblib import dump
 from config import settings
 
 
-SERVICE_API = f"{settings.api_base_url}/api/{settings.api_version}/{settings.service_type}"
+SERVICE_API = f"{settings.API_BASE_URL}/api/{settings.API_VERSION}/{settings.SERVICE_TYPE}"
 
 
 def generate_d2v_model():

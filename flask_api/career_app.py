@@ -12,7 +12,7 @@ from joblib import dump
 
 app = Flask(__name__)
 
-SERVICE_API = f"{settings.api_base_url}/api/{settings.api_version}/{settings.service_type}"
+SERVICE_API = f"{settings.API_BASE_URL}/api/{settings.API_VERSION}/{settings.SERVICE_TYPE}"
 
 
 @app.route("/ai/careers/d2v/train/", methods=['GET'])

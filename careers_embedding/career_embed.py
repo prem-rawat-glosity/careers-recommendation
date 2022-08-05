@@ -41,14 +41,14 @@ def get_model_object(api_url, d2v=True):
         endpoint = "{}/getD2VModel".format(api_url)
         model_info = requests.get(endpoint).json()["d2vModelData"][0]
         # model download url
-        model_download_link = f"{settings.models_base_url}/d2v_models/{model_info['key']}"
+        model_download_link = f"{settings.CAREERS_MODEL_BASE_URL}/d2v_models/{model_info['key']}"
         model_filepath = download_model(model_url=model_download_link, destination_folder="models")
         model_obj = joblib.load(model_filepath)
     else:
         endpoint = "{}/getTFIDFModel".format(api_url)
         model_info = requests.get(endpoint).json()["tfidfModelData"][0]
         # model download url
-        model_download_link = f"{settings.models_base_url}/d2v_models/{model_info['key']}"
+        model_download_link = f"{settings.CAREERS_MODEL_BASE_URL}/d2v_models/{model_info['key']}"
         model_filepath = download_model(model_url=model_download_link, destination_folder="models")
         model_obj = joblib.load(model_filepath)
     return model_obj
